@@ -68,9 +68,9 @@ function App() {
             header={{
                 // logo: ,
                 text: (<>
-                  {location.pathname === '/'?<div style={{paddingLeft: '5px'}} />:<><Button icon={<IconHome />} aria-label="返回首页" onClick={()=>{navigate('/')}} /><div style={{borderRight: '1px solid #EDEDED', margin: '0 10px'}}></div></>}
+                  {location.pathname === '/'?<div style={{paddingLeft: '5px'}} />:<><Button icon={<IconHome />} aria-label="返回首页" className='animate__animated animate__fadeIn' onClick={()=>{navigate('/')}} /><div style={{borderRight: '1px solid #EDEDED', margin: '0 10px'}}></div></>}
                   
-                  <div style={{alignItems: 'center', display: 'flex'}}>
+                  <div style={{alignItems: 'center', display: 'flex',transition:'all 2s'}} className="animate__animated animate__fadeInLeft">
                     <IconSend size='extra-large' style={{color: 'var(--semi-color-primary)'}} />
                     <span style={{paddingLeft:'10px'}}>虎腾数据</span>
                   </div>

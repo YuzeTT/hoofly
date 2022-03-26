@@ -47,7 +47,7 @@ function Home() {
   return (
     <div className="App">
       <Center>
-        <Title heading={2} style={{margin: '8px 0'}} >👋你好，YuzeTT</Title>
+        <Title heading={2} style={{margin: '8px 0'}} className="animate__animated animate__rubberBand">👋你好，YuzeTT</Title>
 
         <Descriptions data={data} row style={style} size="large" />
 
