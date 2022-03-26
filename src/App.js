@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { Button, Toast } from '@douyinfe/semi-ui';
+import Home from './Home'
+import Score from './Apps/Score';
 import { Layout } from '@douyinfe/semi-ui';
-import { Nav, Avatar, Dropdown, Col, Row, Empty } from '@douyinfe/semi-ui';
+import { Nav } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
-import { Descriptions } from '@douyinfe/semi-ui';
-import { Tabs, TabPane } from '@douyinfe/semi-ui';
-import { Card } from '@douyinfe/semi-ui';
-// import { IconArrowUp } from '@douyinfe/semi-icons';
-import { IconHistogram, IconSend, IconCopyAdd } from '@douyinfe/semi-icons';
-import { IllustrationConstruction, IllustrationConstructionDark } from '@douyinfe/semi-illustrations';
-import logo from './logo.svg';
+import { IconSend, IconHome } from '@douyinfe/semi-icons';
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import './App.css';
 
 function App() {
   const { Title, Text } = Typography;
   const { Header, Footer, Content } = Layout;
+
+  let navigate = useNavigate();
+  let location = useLocation();
 
   const data = [
     { key: '注册用户', value: '1' },
@@ -58,7 +58,7 @@ function App() {
       <Layout className="components-layout-demo">
         <Header>
           <Nav
-            style={{height: '45px'}}
+            style={{height: '45px', padding: '0 8px', alignItems: 'center'}}
             mode={'horizontal'}
             // items={[
             //     { itemKey: 'user', text: '用户管理', icon: <IconUser /> },
@@ -67,7 +67,14 @@ function App() {
             onSelect={key => console.log(key)}
             header={{
                 // logo: ,
-                text: (<><IconSend size='extra-large' style={{color: 'var(--semi-color-primary)'}} /><span style={{paddingLeft:'10px'}}>虎腾数据</span></>)
+                text: (<>
+                  {location.pathname === '/'?<div style={{paddingLeft: '5px'}} />:<><Button icon={<IconHome />} aria-label="返回首页" onClick={()=>{navigate('/')}} /><div style={{borderRight: '1px solid #EDEDED', margin: '0 10px'}}></div></>}
+                  
+                  <div style={{alignItems: 'center', display: 'flex'}}>
+                    <IconSend size='extra-large' style={{color: 'var(--semi-color-primary)'}} />
+                    <span style={{paddingLeft:'10px'}}>虎腾数据</span>
+                  </div>
+                </>)
             }}
             // footer={
             //     <Dropdown
@@ -86,68 +93,18 @@ function App() {
           />
         </Header>
         <Content>
-          <div style={{maxWidth: '600px', margin: '0 auto', padding: '10px 15px'}}>
-            <Title heading={2} style={{margin: '8px 0'}} >👋你好，YuzeTT</Title>
-
-            <Descriptions data={data} row style={style} size="large" />
-
-            <div>
-              <Tabs type="line">
-                <TabPane tab="我的关注" itemKey="1">
-                  <h3>小程序</h3>
-                  <div>
-                    <Row gutter={[16, 16]}>
-                      <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                        <Card>
-                          <div style={{display: 'flex', alignItems: 'center'}}>
-                            <Avatar color="blue" style={{ marginRight: '15px', borderRadius: '10px', backgroundColor: 'rgba(var(--semi-green-1), 1)' }} shape="square">
-                              <IconHistogram size='extra-large' style={{color: 'rgba(var(--semi-green-6), 1)'}} />
-                            </Avatar>
-                            <div>
-                              <Title heading={5} style={{paddingBottom: '3px'}}>成绩分析</Title>
-                              <Text style={{textAlign: 'center'}} type="tertiary">APPID: 100001</Text>
-                            </div>
-                          </div>
-                        </Card>
-                      </Col>
-                      <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                        <Card>
-                          <div style={{display: 'flex', alignItems: 'center'}}>
-                            <Avatar color="blue" style={{ marginRight: '15px', borderRadius: '10px', backgroundColor: 'rgba(var(--semi-light-blue-1), 1)' }} shape="square">
-                              <IconCopyAdd size='extra-large' style={{color: 'rgba(var(--semi-blue-6), 1)'}} />
-                            </Avatar>
-                            <div>
-                              <Title heading={5} style={{paddingBottom: '3px'}}>发布作业</Title>
-                              <Text style={{textAlign: 'center'}} type="tertiary">APPID: 100001</Text>
-                            </div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                    
-                  </div>
-                </TabPane>
-                <TabPane tab="课程" itemKey="2">
-                  <Empty
-                    style={{paddingTop: '15px'}}
-                    image={<IllustrationConstruction style={{width: 150, height: 150}} />}
-                    darkModeImage={<IllustrationConstructionDark style={{width: 150, height: 150}} />}
-                    title={'功能建设中'}
-                    description="当前功能暂未开放，敬请期待。"
-                  />
-                </TabPane>
-                <TabPane tab="发布" itemKey="3">
-                  <Empty
-                    style={{paddingTop: '15px'}}
-                    image={<IllustrationConstruction style={{width: 150, height: 150}} />}
-                    darkModeImage={<IllustrationConstructionDark style={{width: 150, height: 150}} />}
-                    title={'功能建设中'}
-                    description="当前功能暂未开放，敬请期待。"
-                  />
-                </TabPane>
-            </Tabs>
-            </div>
-          </div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/score" element={<Score />} />
+            <Route
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>404</p>
+                </main>
+              }
+            />
+          </Routes>
         </Content>
         <Footer>
           <div style={{textAlign: 'center'}}>
