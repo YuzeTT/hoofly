@@ -1,8 +1,11 @@
 import React from 'react'
+import Center from '../../Framework/Center'
 
 function Score() {
   return (
-    <div>成绩</div>
+    <div>
+      <Center>成绩</Center>
+    </div>
   )
 }
 

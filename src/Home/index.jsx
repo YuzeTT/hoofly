@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
+import Center from '../Framework/Center';
 import { Button, Toast } from '@douyinfe/semi-ui';
 import { Avatar, Col, Row, Empty } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
@@ -45,7 +46,7 @@ function Home() {
 
   return (
     <div className="App">
-      <div style={{maxWidth: '600px', margin: '0 auto', padding: '10px 15px'}}>
+      <Center>
         <Title heading={2} style={{margin: '8px 0'}} >👋你好，YuzeTT</Title>
 
         <Descriptions data={data} row style={style} size="large" />
@@ -70,14 +71,14 @@ function Home() {
                     </Card>
                   </Col>
                   <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                    <Card>
+                    <Card onClick={()=>{Toast.warning('该功能开发者，尚未开放')}}>
                       <div style={{display: 'flex', alignItems: 'center'}}>
                         <Avatar color="blue" style={{ marginRight: '15px', borderRadius: '10px', backgroundColor: 'rgba(var(--semi-light-blue-1), 1)' }} shape="square">
                           <IconCopyAdd size='extra-large' style={{color: 'rgba(var(--semi-blue-6), 1)'}} />
                         </Avatar>
                         <div>
                           <Title heading={5} style={{paddingBottom: '3px'}}>发布作业</Title>
-                          <Text style={{textAlign: 'center'}} type="tertiary">APPID: 100001</Text>
+                          <Text style={{textAlign: 'center'}} type="tertiary">APPID: 100002</Text>
                         </div>
                       </div>
                     </Card>
@@ -106,7 +107,7 @@ function Home() {
             </TabPane>
         </Tabs>
         </div>
-      </div>
+      </Center>
     </div>
   );
 }
