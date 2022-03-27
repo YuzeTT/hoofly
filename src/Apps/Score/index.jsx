@@ -79,16 +79,16 @@ const Input = () => {
   // ]
 
   const [subject, setSubject] = useState([
-    { name: '语文', fullScore: 150 },
-    { name: '数学', fullScore: 150 },
-    { name: '英语', fullScore: 150 },
-    { name: '历史', fullScore: 100 },
-    { name: '地理', fullScore: 100 },
-    { name: '政治', fullScore: 100 },
-    { name: '生物', fullScore: 100 },
-    { name: '物理', fullScore: 100 },
-    { name: '化学', fullScore: 100 },
-    { name: '体育', fullScore: 100 },
+    { name: '语文', fullScore: 150, ranking: 0 },
+    { name: '数学', fullScore: 150, ranking: 0 },
+    { name: '英语', fullScore: 150, ranking: 0 },
+    { name: '历史', fullScore: 100, ranking: 0 },
+    { name: '地理', fullScore: 100, ranking: 0 },
+    { name: '政治', fullScore: 100, ranking: 0 },
+    { name: '生物', fullScore: 100, ranking: 0 },
+    { name: '物理', fullScore: 100, ranking: 0 },
+    { name: '化学', fullScore: 100, ranking: 0 },
+    { name: '体育', fullScore: 100, ranking: 0 },
   ])
 
   const submit_1 = (values) => {
@@ -151,27 +151,19 @@ const Input = () => {
                     <Radio value='end'>期末</Radio>
                     <Radio value='other'>其他</Radio>
                   </RadioGroup>
-                  {/* <Select
-                      field="business"
-                      multiple
-                      placeholder='请选择考试科目'
-                      label="选择科目"
-                      rules={[
-                        { required: true, message: '此处必填' }
-                      ]}
-                      initValue={["0","1","2","3","4","5","6"]}
-                  >
-                      <Select.Option value="0">语文</Select.Option>
-                      <Select.Option value="1">数学</Select.Option>
-                      <Select.Option value="2">英语</Select.Option>
-                      <Select.Option value="3">历史</Select.Option>
-                      <Select.Option value="4">地理</Select.Option>
-                      <Select.Option value="5">政治</Select.Option>
-                      <Select.Option value="6">生物</Select.Option>
-                      <Select.Option value="7">物理</Select.Option>
-                      <Select.Option value="8">化学</Select.Option>
-                      <Select.Option value="9">体育</Select.Option>
-                  </Select> */}
+                </Section>
+                <Section text='分数范围'>
+                  <Row gutter={10}>
+                    {
+                      subject.map((item, i)=> {
+                        return (
+                          <Col span={8} xs={8} sm={8} md={6} lg={6} xl={6} key={i}>
+                            <InputNumber hideButtons labelPosition='inset' field='pass' initValue={item.fullScore} label={{text:item.name, required: true}}/>
+                          </Col>
+                        )
+                      })
+                    }
+                  </Row>
                 </Section>
 
                 <div style={{backgroundColor: 'rgba(var(--semi-grey-0), 1)', padding: '10px', marginBottom: '10px',borderRadius:'5px'}}>
@@ -187,7 +179,7 @@ const Input = () => {
                     <Button theme='light' type='danger' style={{ marginRight: 8 }}>重置</Button>
                   </Popconfirm>
                   
-                  <Button theme='solid' type="primary" htmlType="submit">
+                  <Button theme='solid' type="primary" htmlType="submit" style={{ width: 120 }}>
                     下一步
                   </Button>
                 </div>
@@ -216,7 +208,7 @@ const Input = () => {
                             <Form.Input field='StudentNumber' label='成绩' initValue='150' />
                           </Col>
                           <Col span={8}>
-                            <Form.InputNumber hideButtons field='price' label='满分' initValue={item.fullScore}/>
+                            <Form.InputNumber  field='price' label='排名' initValue={item.ranking}/>
                           </Col>
                           <Col span={6}>
                             <Form.Checkbox field='agree' noLabel>无考试</Form.Checkbox>
@@ -238,7 +230,7 @@ const Input = () => {
                 <div style={{textAlign: 'right'}}>
                   <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(0)}}>上一步</Button>
                   
-                  <Button theme='solid' type="primary" htmlType="submit">
+                  <Button theme='solid' type="primary" htmlType="submit"  style={{ width: 120 }}>
                     下一步
                   </Button>
                 </div>
