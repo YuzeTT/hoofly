@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Center from '../../Framework/Center'
-import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea } from '@douyinfe/semi-ui';
+import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea, Collapse } from '@douyinfe/semi-ui';
 
 const Input = () => {
   const { Option } = Form.Select;
@@ -92,22 +92,39 @@ const Input = () => {
   ])
 
   const [testInfo, setTestInfo] = useState()
-  const [score, setScore] = useState()
+  const [scores, setScores] = useState()
+  const [fullScores, setFullScores] = useState()
+  const [scoreDatas, setScoreDatas] = useState()
+  const [submitLoading, setSubmitLoading] = useState(false)
 
   const submit_0 = (values) => {
     Toast.info({ content: JSON.stringify(values) })
     setTestInfo(values)
+    setFullScores(Object.entries(values).filter(([k]) => k.startsWith('fullScore')))
     setStep(1)
   }
+  useEffect(()=>{
+    console.log(scores)
+  }, [scores])
   const submit_1 = (values) => {
-    Toast.info({ content: JSON.stringify(values) })
-    setScore(values)
+    setSubmitLoading(true)
+    // Toast.info('请确认数据无误，再次点击[下一步]提交')
+    // console.log(scores)
+    setScores(Object.entries(values).filter(([k]) => k.startsWith('score')))
+    const score_ = Object.entries(values).filter(([k]) => k.startsWith('score'))
+    setScoreDatas(
+      fullScores.map(([/**/, vfs], i) => {
+        const [/**/, vs = null] = score_[i] || [];
+        return [vs, vfs]; 
+      })
+    )
+    setSubmitLoading(false)
     setStep(2)
   }
   return (
     <div>
       <div style={{display: 'flex', alignItems: 'center', padding: '10px 0'}}>
-        <Title heading={2} style={{margin: '8px 0'}} >成绩分析</Title>
+        <Title heading={2} style={{margin: '8px 0'}} >学情报告</Title>
         <Tag color='blue' type='solid' size='large' style={{marginLeft: '7px', marginTop: '2px'}}> BETA </Tag>
       </div>
       
@@ -214,7 +231,7 @@ const Input = () => {
                           </Col> */}
                           <Col span={10} style={{display: 'flex', alignItems: 'center'}}>
                             <Label text={item.name} style={{margin: 0}}/>
-                            <Form.Input field={'score'+i} label='成绩' initValue='150' />
+                            <Form.InputNumber hideButtons field={'score'+i} label='成绩' initValue={''} />
                           </Col>
                           <Col span={8}>
                             <Form.InputNumber  field={'ranking'+i} label='排名' initValue={item.ranking}/>
@@ -240,7 +257,7 @@ const Input = () => {
                 <div style={{textAlign: 'right'}}>
                   <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(0)}}>上一步</Button>
                   
-                  <Button theme='solid' type="primary" htmlType="submit"  style={{ width: 120 }}>
+                  <Button loading={submitLoading} theme='solid' type="primary" htmlType="submit"  style={{ width: 120 }}>
                     下一步
                   </Button>
                 </div>
@@ -250,18 +267,33 @@ const Input = () => {
           }
         </Form>
 
-        {/* ====== step 1 ====== */}
-        <div style={{display: step===2?'':'none'}}>
+        {/* ====== step 3 ====== */}
+        {/* style={{display: step===2?'':'none'}} */}
+        {step===2?<div>
           {/* <TextArea value={JSON.stringify(subject)}></TextArea> */}
-          <h3>考试信息</h3>
-          <TextArea autosize rows={1} value={JSON.stringify(testInfo, null, '\t')}></TextArea>
-          <h3>分数信息</h3>
-          <TextArea autosize rows={1} value={JSON.stringify(score, null, '\t')}></TextArea>
+          <Text type="tertiary">总分</Text>
+          <Title heading={2} style={{margin: '8px 0'}} >
+            {
+              scores.ranking1
+            }
+          </Title>
+          <Collapse>
+            <Collapse.Panel header="考试信息" itemKey="1">
+              <TextArea autosize rows={1} value={JSON.stringify(testInfo, null, '\t')}></TextArea>
+            </Collapse.Panel>
+            <Collapse.Panel header="分数信息" itemKey="2">
+              <TextArea autosize rows={1} value={JSON.stringify(scores, null, '\t')}></TextArea>
+            </Collapse.Panel>
+            <Collapse.Panel header="处理结果" itemKey="3">
+              {/* <TextArea autosize rows={1} value={scores}></TextArea> */}
+              <TextArea autosize rows={1} value={JSON.stringify(scoreDatas)}></TextArea>
+            </Collapse.Panel>
+          </Collapse>
 
           <div style={{textAlign: 'right',paddingTop: '20px'}}>
             <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(1)}}>上一步</Button>
           </div>
-        </div>
+        </div>:''}
 
         {/* <Space vertical spacing='loose' align='start'>
           <RadioGroup type='button' buttonSize='small' defaultValue={1} aria-label="单选组合示例">

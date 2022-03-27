@@ -64,7 +64,7 @@ function Home() {
                           <IconHistogram size='extra-large' style={{color: 'rgba(var(--semi-green-6), 1)'}} />
                         </Avatar>
                         <div>
-                          <Title heading={5} style={{paddingBottom: '3px'}}>成绩分析</Title>
+                          <Title heading={5} style={{paddingBottom: '3px'}}>学情报告</Title>
                           <Text style={{textAlign: 'center'}} type="tertiary">APPID: 100001</Text>
                         </div>
                       </div>
