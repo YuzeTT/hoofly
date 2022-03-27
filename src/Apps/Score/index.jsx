@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Center from '../../Framework/Center'
-import { Card, Steps, Tag, Typography, Form, Col, Row, Button, Popconfirm } from '@douyinfe/semi-ui';
+import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm } from '@douyinfe/semi-ui';
 
 const Input = () => {
   const { Option } = Form.Select;
   const { Title, Text } = Typography;
   const { Section, Input, InputNumber, AutoComplete, Select, TreeSelect, Cascader, DatePicker, TimePicker, TextArea, CheckboxGroup, Checkbox, RadioGroup, Radio, Slider, Rating, Switch, TagInput } = Form;
+
+  const [step, setStep] = useState(1)
+
   const treeData = [
       {
           label: '七年级',
@@ -62,6 +65,10 @@ const Input = () => {
   const formBox = {
     width: '90%'
   }
+
+  const submit_1 = (values) => {
+    Toast.info({ content: JSON.stringify(values) })
+  }
   return (
     <div>
       <div style={{display: 'flex', alignItems: 'center', padding: '10px 0'}}>
@@ -73,22 +80,22 @@ const Input = () => {
         <Steps current={0} type="basic" size="small">
           <Steps.Step title="考试信息" />
           <Steps.Step title="录入成绩" />
-          <Steps.Step title="完成" />
+          <Steps.Step title="生成报告" />
         </Steps>
       }>
-        <Form layout='vertical' onValueChange={values=>console.log(values)} id='form1'>
+        <Form layout='vertical' onValueChange={values=>console.log(values)} onSubmit={values => submit_1(values)}>
           {
             ({ formState, values, formApi }) => (
               <>
                 <Section text='考生信息'>
                   <Row gutter={10}>
                     <Col span={12}>
-                      <Form.Input field='StudentNumber' label='学号' />
+                      <Form.Input field='StudentNumber' label='学号' initValue='210247' />
                     </Col>
                     <Col span={12}>
                       <Form.Input field='UserName' label='姓名' rules={[
                         { required: true, message: '此处必填' }
-                      ]}/>
+                      ]} initValue='饶志伟'/>
                     </Col>
                   </Row>
                   
@@ -105,11 +112,12 @@ const Input = () => {
                     rules={[
                       { required: true, message: '此处必填' }
                     ]}
+                    initValue={['7','2']}
                   >
                   </Form.Cascader>
                   <RadioGroup style={{padding: '0'}} field="testType" type='button' label='考试类型' rules={[
                     { required: true, message: '此处必填' }
-                  ]}>
+                  ]} initValue='month1'>
                     <Radio value='month1'>月考 #1</Radio>
                     <Radio value='center'>期中</Radio>
                     <Radio value='month2'>月考 #2</Radio>
@@ -124,6 +132,7 @@ const Input = () => {
                       rules={[
                         { required: true, message: '此处必填' }
                       ]}
+                      initValue={["0","1","2","3","4","5","6"]}
                   >
                       <Select.Option value="0">语文</Select.Option>
                       <Select.Option value="1">数学</Select.Option>
@@ -152,7 +161,7 @@ const Input = () => {
                   </Popconfirm>
                   
                   <Button theme='solid' type="primary" htmlType="submit">
-                    提交
+                    下一步
                   </Button>
                 </div>
                 
