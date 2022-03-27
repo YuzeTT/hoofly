@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Banner } from '@douyinfe/semi-ui';
+import config from './config'
+import { Button, Banner, Tag } from '@douyinfe/semi-ui';
 import Home from './Home'
 import Score from './Apps/Score';
 import { Layout } from '@douyinfe/semi-ui';
@@ -73,6 +74,7 @@ function App() {
                   <div style={{alignItems: 'center', display: 'flex',transition:'all 2s'}} className="animate__animated animate__fadeInLeft">
                     <IconSend size='extra-large' style={{color: 'var(--semi-color-primary)'}} />
                     <span style={{paddingLeft:'10px'}}>虎腾数据</span>
+                    {config.debug?<Tag color='orange' type='ghost' style={{marginLeft: '5px'}}>DEBUG v{config.version}</Tag>:''}
                   </div>
                 </>)
             }}
