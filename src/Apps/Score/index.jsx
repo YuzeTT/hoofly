@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Center from '../../Framework/Center'
-import { Card, Steps, Descriptions, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea, Collapse } from '@douyinfe/semi-ui';
+import { Card, Steps, Banner, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea, Collapse, Empty } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 
 const Input = () => {
   const { Option } = Form.Select;
@@ -83,7 +84,8 @@ const Input = () => {
   const [fullScores, setFullScores] = useState()
   const [scoreDatas, setScoreDatas] = useState()
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [allFullScores, setAllFullScores] = useState(false)
+  const [allFullScores, setAllFullScores] = useState(0)
+  const [sumAllFullScores, setSumAllFullScores] = useState(0)
 
   const submit_0 = (values) => {
     // Toast.info({ content: JSON.stringify(values) })
@@ -91,14 +93,15 @@ const Input = () => {
     setFullScores(Object.entries(values).filter(([k]) => k.startsWith('fullScore')))
     setStep(1)
   }
-  useEffect(()=>{
-    console.log(scores)
-  }, [scores])
   const submit_1 = (values) => {
     // 开始加载
-    setSubmitLoading(true)
+    // setSubmitLoading(true)
     // 赋值分数
     setScores(Object.entries(values).filter(([k]) => k.startsWith('score')))
+    // 赋值无测试
+    // setNoTest(Object.entries(values).filter(([k]) => k.startsWith('noTest')))
+    const nt = Object.entries(values).filter(([k]) => k.startsWith('noTest'))
+    console.log(nt)
     // 整理分数
     const score_ = Object.entries(values).filter(([k]) => k.startsWith('score'))
     setScoreDatas(
@@ -107,13 +110,27 @@ const Input = () => {
         return [vs, vfs]; 
       })
     )
+    // setNoTest(
+    //   scoreDatas.map(([ vfs, v2], i) => {
+    //     const [/**/, vs = null] = nt[i] || [];
+    //     return [vs, vfs, v2]; 
+    //   })
+    // )
     // 计算总分
     let as = 0
+    let sas = 0
     for(let i = 0; i < score_.length; i++) {
-      console.log(score_[i][1])
-      as = as + score_[i][1]
+      console.log(fullScores[i])
+      if(score_[i][1]!==999) {
+        if(score_[i][1]!==888) {
+          as = as + score_[i][1]
+        }
+        sas = sas + fullScores[i][1]
+      }
+      
     }
     setAllFullScores(as)
+    setSumAllFullScores(sas)
     // 取消加载
     setSubmitLoading(false)
     // 切换下一步
@@ -219,6 +236,21 @@ const Input = () => {
           {
             ({ formState, values, formApi }) => (
               <>
+               <Banner
+                  fullMode={false}
+                  title="必读提示"
+                  type="warning"
+                  bordered
+                  description={<>
+                    <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}} type="danger">录入时必须从上到下依次输入</Text>
+                    <br />
+                    <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}} type="danger">阅卷中 请输入 888</Text>
+                    <br />
+                    <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}} type="danger">无考试 请输入 999</Text>
+                  </>}
+                  style={{marginBottom: '20px'}}
+                >
+                </Banner>
                 <Section text='各科成绩'>
                   {
                     subject.map((item, i)=> {
@@ -229,7 +261,9 @@ const Input = () => {
                           </Col> */}
                           <Col span={10} style={{display: 'flex', alignItems: 'center'}}>
                             <Label text={item.name} style={{margin: 0}}/>
-                            <Form.InputNumber hideButtons field={'score'+i} label='成绩' initValue={''} />
+                            <Form.InputNumber hideButtons field={'score'+i} label='成绩' rules={[
+                        { required: true, message: '此处必填' }
+                      ]} initValue={''} />
                           </Col>
                           <Col span={8}>
                             <Form.InputNumber  field={'ranking'+i} label='排名' initValue={item.ranking}/>
@@ -241,11 +275,6 @@ const Input = () => {
                       )
                     })
                   }
-                  
-                  
-                  
-                  {/* <Form.Input field='Password' label='密码' style={{width:176}}/> */}
-                  
                 </Section>
 
                 <div style={{backgroundColor: 'rgba(var(--semi-grey-0), 1)', padding: '10px', marginBottom: '10px',borderRadius:'5px'}}>
@@ -274,6 +303,7 @@ const Input = () => {
               {allFullScores}
             </Title>
             <Text strong style={{paddingLeft: '5px'}}>分</Text>
+            <Text strong style={{paddingLeft: '5px'}} type="quaternary">满分: {sumAllFullScores}</Text>
           </div>
           <hr style={{margin: '20px 0', borderColor: 'rgba(var(--semi-grey-1), .2)'}}/>
           <div>
@@ -281,18 +311,18 @@ const Input = () => {
               {
                 scoreDatas.map((item, key)=>{
                   return (
-                    
+                    item[0]!==999?
                     <Col span={12} xs={12} sm={12} md={8} lg={8} xl={8} key={key}>
                       <div >
                         <Text style={{fontSize: '1rem'}}>{subject[key].name}</Text>
                         {
-                          item[0]?
+                          item[0]!==888?
                           <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}}>{item[0]}</Text>:<Text type="quaternary" strong style={{paddingLeft: '5px', fontSize: '1rem'}}>阅卷中</Text>
                         }
                         
                         <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}} type="quaternary">/ {item[1]}</Text>
                       </div>
-                    </Col>
+                    </Col>:''
                   )
                 })
               }
@@ -301,16 +331,25 @@ const Input = () => {
           <br />
           <Collapse>
             <Collapse.Panel header="考试信息" itemKey="1">
-              <TextArea autosize rows={1} value={JSON.stringify(testInfo, null, '\t')}></TextArea>
+              <TextArea autosize rows={1} value={
+                JSON.stringify(testInfo, null, '\t')+'\n'+JSON.stringify(scores, null, '\t')+'\n'+JSON.stringify(scoreDatas, null, '\t')
+              }></TextArea>
             </Collapse.Panel>
-            <Collapse.Panel header="分数信息" itemKey="2">
+            {/* <Collapse.Panel header="分数信息" itemKey="2">
               <TextArea autosize rows={1} value={JSON.stringify(scores, null, '\t')}></TextArea>
             </Collapse.Panel>
             <Collapse.Panel header="处理结果" itemKey="3">
-              {/* <TextArea autosize rows={1} value={scores}></TextArea> */}
-              <TextArea autosize rows={1} value={JSON.stringify(scoreDatas)}></TextArea>
-            </Collapse.Panel>
+              <TextArea autosize rows={1} value={JSON.stringify(scoreDatas, null, '\t')}></TextArea>
+            </Collapse.Panel> */}
           </Collapse>
+
+          <Empty
+            image={<IllustrationNoContent style={{width: 150, height: 150}} />}
+            darkModeImage={<IllustrationNoContentDark style={{width: 150, height: 150}} />}
+            title="更多分析开发中..."
+            description="咕咕咕"
+          >
+          </Empty>
 
           <div style={{textAlign: 'right',paddingTop: '20px'}}>
             <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(1)}}>上一步</Button>
