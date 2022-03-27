@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Center from '../../Framework/Center'
-import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea, Collapse } from '@douyinfe/semi-ui';
+import { Card, Steps, Descriptions, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea, Collapse } from '@douyinfe/semi-ui';
 
 const Input = () => {
   const { Option } = Form.Select;
@@ -65,20 +65,7 @@ const Input = () => {
   const formBox = {
     width: '90%'
   }
-  // const subject = [
-  //   { name: '语文', fullScore: 150 },
-  //   { name: '数学', fullScore: 150 },
-  //   { name: '英语', fullScore: 150 },
-  //   { name: '历史', fullScore: 100 },
-  //   { name: '地理', fullScore: 100 },
-  //   { name: '政治', fullScore: 100 },
-  //   { name: '生物', fullScore: 100 },
-  //   { name: '物理', fullScore: 100 },
-  //   { name: '化学', fullScore: 100 },
-  //   { name: '体育', fullScore: 100 },
-  // ]
-
-  const [subject, setSubject] = useState([
+  const subject = [
     { name: '语文', fullScore: 150, ranking: 0 },
     { name: '数学', fullScore: 150, ranking: 0 },
     { name: '英语', fullScore: 150, ranking: 0 },
@@ -89,16 +76,17 @@ const Input = () => {
     { name: '物理', fullScore: 100, ranking: 0 },
     { name: '化学', fullScore: 100, ranking: 0 },
     { name: '体育', fullScore: 30, ranking: 0 },
-  ])
+  ]
 
   const [testInfo, setTestInfo] = useState()
   const [scores, setScores] = useState()
   const [fullScores, setFullScores] = useState()
   const [scoreDatas, setScoreDatas] = useState()
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [allFullScores, setAllFullScores] = useState(false)
 
   const submit_0 = (values) => {
-    Toast.info({ content: JSON.stringify(values) })
+    // Toast.info({ content: JSON.stringify(values) })
     setTestInfo(values)
     setFullScores(Object.entries(values).filter(([k]) => k.startsWith('fullScore')))
     setStep(1)
@@ -107,10 +95,11 @@ const Input = () => {
     console.log(scores)
   }, [scores])
   const submit_1 = (values) => {
+    // 开始加载
     setSubmitLoading(true)
-    // Toast.info('请确认数据无误，再次点击[下一步]提交')
-    // console.log(scores)
+    // 赋值分数
     setScores(Object.entries(values).filter(([k]) => k.startsWith('score')))
+    // 整理分数
     const score_ = Object.entries(values).filter(([k]) => k.startsWith('score'))
     setScoreDatas(
       fullScores.map(([/**/, vfs], i) => {
@@ -118,7 +107,16 @@ const Input = () => {
         return [vs, vfs]; 
       })
     )
+    // 计算总分
+    let as = 0
+    for(let i = 0; i < score_.length; i++) {
+      console.log(score_[i][1])
+      as = as + score_[i][1]
+    }
+    setAllFullScores(as)
+    // 取消加载
     setSubmitLoading(false)
+    // 切换下一步
     setStep(2)
   }
   return (
@@ -268,15 +266,39 @@ const Input = () => {
         </Form>
 
         {/* ====== step 3 ====== */}
-        {/* style={{display: step===2?'':'none'}} */}
         {step===2?<div>
           {/* <TextArea value={JSON.stringify(subject)}></TextArea> */}
           <Text type="tertiary">总分</Text>
-          <Title heading={2} style={{margin: '8px 0'}} >
-            {
-              scores.ranking1
-            }
-          </Title>
+          <div style={{display: 'flex', alignItems: 'end', margin: '10px 0'}}>
+            <Title style={{fontSize: '3.6rem'}}>
+              {allFullScores}
+            </Title>
+            <Text strong style={{paddingLeft: '5px'}}>分</Text>
+          </div>
+          <hr style={{margin: '20px 0', borderColor: 'rgba(var(--semi-grey-1), .2)'}}/>
+          <div>
+            <Row gutter={[15,15]}>
+              {
+                scoreDatas.map((item, key)=>{
+                  return (
+                    
+                    <Col span={12} xs={12} sm={12} md={8} lg={8} xl={8} key={key}>
+                      <div >
+                        <Text style={{fontSize: '1rem'}}>{subject[key].name}</Text>
+                        {
+                          item[0]?
+                          <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}}>{item[0]}</Text>:<Text type="quaternary" strong style={{paddingLeft: '5px', fontSize: '1rem'}}>阅卷中</Text>
+                        }
+                        
+                        <Text strong style={{paddingLeft: '5px', fontSize: '1rem'}} type="quaternary">/ {item[1]}</Text>
+                      </div>
+                    </Col>
+                  )
+                })
+              }
+            </Row>
+          </div>
+          <br />
           <Collapse>
             <Collapse.Panel header="考试信息" itemKey="1">
               <TextArea autosize rows={1} value={JSON.stringify(testInfo, null, '\t')}></TextArea>
@@ -294,24 +316,6 @@ const Input = () => {
             <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(1)}}>上一步</Button>
           </div>
         </div>:''}
-
-        {/* <Space vertical spacing='loose' align='start'>
-          <RadioGroup type='button' buttonSize='small' defaultValue={1} aria-label="单选组合示例">
-            <Radio value={1}>即时推送</Radio>
-            <Radio value={2}>定时推送</Radio>
-            <Radio value={3}>动态推送</Radio>
-          </RadioGroup>
-          <RadioGroup type='button' buttonSize='middle' defaultValue={1} aria-label="单选组合示例">
-            <Radio value={1}>即时推送</Radio>
-            <Radio value={2}>定时推送</Radio>
-            <Radio value={3}>动态推送</Radio>
-          </RadioGroup>
-          <RadioGroup type='button' buttonSize='large' defaultValue={1} aria-label="单选组合示例">
-            <Radio value={1}>即时推送</Radio>
-            <Radio value={2}>定时推送</Radio>
-            <Radio value={3}>动态推送</Radio>
-          </RadioGroup>
-        </Space> */}
       </Card>
     </div>
   )
