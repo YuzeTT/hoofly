@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Center from '../../Framework/Center'
-import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm, List } from '@douyinfe/semi-ui';
+import { Card, Steps, Toast, Tag, Typography, Form, Col, Row, Button, Popconfirm, TextArea } from '@douyinfe/semi-ui';
 
 const Input = () => {
   const { Option } = Form.Select;
   const { Title, Text } = Typography;
-  const { Section, Input, InputNumber, AutoComplete, Select, TreeSelect, Cascader, DatePicker, TimePicker, TextArea, CheckboxGroup, Checkbox, RadioGroup, Radio, Slider, Rating, Switch, TagInput, Label } = Form;
+  const { Section, Input, InputNumber, AutoComplete, Select, TreeSelect, Cascader, DatePicker, TimePicker, CheckboxGroup, Checkbox, RadioGroup, Radio, Slider, Rating, Switch, TagInput, Label } = Form;
 
   const [step, setStep] = useState(0)
 
@@ -88,12 +88,21 @@ const Input = () => {
     { name: '生物', fullScore: 100, ranking: 0 },
     { name: '物理', fullScore: 100, ranking: 0 },
     { name: '化学', fullScore: 100, ranking: 0 },
-    { name: '体育', fullScore: 100, ranking: 0 },
+    { name: '体育', fullScore: 30, ranking: 0 },
   ])
 
+  const [testInfo, setTestInfo] = useState()
+  const [score, setScore] = useState()
+
+  const submit_0 = (values) => {
+    Toast.info({ content: JSON.stringify(values) })
+    setTestInfo(values)
+    setStep(1)
+  }
   const submit_1 = (values) => {
     Toast.info({ content: JSON.stringify(values) })
-    setStep(1)
+    setScore(values)
+    setStep(2)
   }
   return (
     <div>
@@ -110,17 +119,17 @@ const Input = () => {
         </Steps>
       }>
         {/* ====== step 1 ====== */}
-        <Form style={{display: step===0?'':'none'}} layout='vertical' onValueChange={values=>console.log(values)} onSubmit={values => submit_1(values)}>
+        <Form style={{display: step===0?'':'none'}} layout='vertical' onValueChange={values=>console.log(values)} onSubmit={values => submit_0(values)}>
           {
             ({ formState, values, formApi }) => (
               <>
                 <Section text='考生信息'>
                   <Row gutter={10}>
                     <Col span={12}>
-                      <Form.Input field='StudentNumber' label='学号' initValue='210247' />
+                      <Form.Input field='studentNumber' label='学号' initValue='210247' />
                     </Col>
                     <Col span={12}>
-                      <Form.Input field='UserName' label='姓名' rules={[
+                      <Form.Input field='name' label='姓名' rules={[
                         { required: true, message: '此处必填' }
                       ]} initValue='饶志伟'/>
                     </Col>
@@ -133,7 +142,7 @@ const Input = () => {
                   <Form.Cascader
                     placeholder="请选择考试年级"
                     treeData={treeData}
-                    field='area'
+                    field='grade'
                     validateStatus="default"
                     label='年级'
                     rules={[
@@ -152,13 +161,13 @@ const Input = () => {
                     <Radio value='other'>其他</Radio>
                   </RadioGroup>
                 </Section>
-                <Section text='分数范围'>
+                <Section text='设置满分'>
                   <Row gutter={10}>
                     {
                       subject.map((item, i)=> {
                         return (
                           <Col span={8} xs={8} sm={8} md={6} lg={6} xl={6} key={i}>
-                            <InputNumber hideButtons labelPosition='inset' field='pass' initValue={item.fullScore} label={{text:item.name, required: true}}/>
+                            <InputNumber hideButtons labelPosition='inset' field={'fullScore'+i} initValue={item.fullScore} label={{text:item.name, required: true}}/>
                           </Col>
                         )
                       })
@@ -167,7 +176,7 @@ const Input = () => {
                 </Section>
 
                 <div style={{backgroundColor: 'rgba(var(--semi-grey-0), 1)', padding: '10px', marginBottom: '10px',borderRadius:'5px'}}>
-                  <code style={{marginTop: 30}}>{JSON.stringify(formState)}</code>
+                  <TextArea value={JSON.stringify(formState.values)}></TextArea>
                 </div>
                 <div style={{textAlign: 'right'}}>
                   <Popconfirm
@@ -205,13 +214,13 @@ const Input = () => {
                           </Col> */}
                           <Col span={10} style={{display: 'flex', alignItems: 'center'}}>
                             <Label text={item.name} style={{margin: 0}}/>
-                            <Form.Input field='StudentNumber' label='成绩' initValue='150' />
+                            <Form.Input field={'score'+i} label='成绩' initValue='150' />
                           </Col>
                           <Col span={8}>
-                            <Form.InputNumber  field='price' label='排名' initValue={item.ranking}/>
+                            <Form.InputNumber  field={'ranking'+i} label='排名' initValue={item.ranking}/>
                           </Col>
                           <Col span={6}>
-                            <Form.Checkbox field='agree' noLabel>无考试</Form.Checkbox>
+                            <Form.Checkbox field={'noTest'+i} noLabel>无考试</Form.Checkbox>
                           </Col>
                         </Row>
                       )
@@ -225,7 +234,8 @@ const Input = () => {
                 </Section>
 
                 <div style={{backgroundColor: 'rgba(var(--semi-grey-0), 1)', padding: '10px', marginBottom: '10px',borderRadius:'5px'}}>
-                  <code style={{marginTop: 30}}>{JSON.stringify(formState)}</code>
+                  {/* <code style={{marginTop: 30}}>{JSON.stringify(formState)}</code> */}
+                  <TextArea value={JSON.stringify(formState.values)}></TextArea>
                 </div>
                 <div style={{textAlign: 'right'}}>
                   <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(0)}}>上一步</Button>
@@ -239,6 +249,19 @@ const Input = () => {
             )
           }
         </Form>
+
+        {/* ====== step 1 ====== */}
+        <div style={{display: step===2?'':'none'}}>
+          {/* <TextArea value={JSON.stringify(subject)}></TextArea> */}
+          <h3>考试信息</h3>
+          <TextArea autosize rows={1} value={JSON.stringify(testInfo, null, '\t')}></TextArea>
+          <h3>分数信息</h3>
+          <TextArea autosize rows={1} value={JSON.stringify(score, null, '\t')}></TextArea>
+
+          <div style={{textAlign: 'right',paddingTop: '20px'}}>
+            <Button theme='light' type='tertiary' style={{ marginRight: 8 }} onClick={()=>{setStep(1)}}>上一步</Button>
+          </div>
+        </div>
 
         {/* <Space vertical spacing='loose' align='start'>
           <RadioGroup type='button' buttonSize='small' defaultValue={1} aria-label="单选组合示例">
